@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="sauceLabs"  verbose="10"    >
+        <listeners>
+            <listener class-name="listeners.Listeners"/>
+        </listeners>
+
+
+    <test name="RegressionTest"  thread-count="4" parallel="methods" >
+        <classes>
+            <class name="tests.BurgerListPageTests"/>
+            <class name="tests.CartPageTests"/>
+            <class name="tests.CheckOutOverviewTests"/>
+            <class name="tests.CheckoutTests"/>
+            <class name="tests.HomePageTests"/>
+            <class name="tests.LoginPageTests"/>
+            <class name="tests.SingleProductPageTest"/>
+        </classes>
+    </test>
+</suite>
