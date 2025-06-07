@@ -4,9 +4,10 @@
     <listeners>
         <listener class-name="listeners.Listeners"/>
     </listeners>
-    <test name="SanityTests"  parallel="none">
-        <classes>
-            <class name="tests.SanityTest"/>
-        </classes>
-    </test>
+<!--    <test name="SanityTests"  parallel="none">-->
+<!--        -->
+<!--        <classes>-->
+<!--            <class name="tests.SanityTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 </suite>

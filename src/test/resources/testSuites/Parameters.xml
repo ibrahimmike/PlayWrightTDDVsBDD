@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="SanityTests"  verbose="10"   thread-count="4" parallel="none" >
+    <listeners>
+        <listener class-name="listeners.Listeners"/>
+    </listeners>
+
+    <test name="SanityTest_Standard_User"  >
+        <parameter name="userName" value="standard_user" />
+        <parameter name="password" value="secret_sauce"/>
+        <classes>
+            <class name="tests.SanityTest" />
+        </classes>
+    </test>
+    <test name="Error_User">
+        <parameter name="userName" value="error_user" />
+        <parameter name="password" value="secret_sauce"/>
+        <classes>
+            <class name="tests.SanityTest"/>
+        </classes>
+    </test>
+    <test name="Problem_User" >
+        <parameter name="userName" value="problem_user"/>
+        <parameter name="password" value="secret_sauce"/>
+        <classes>
+            <class name="tests.SanityTest"/>
+        </classes>
+    </test>
+    <test name="PerformanceTesting" >
+        <parameter name="userName" value="performance_glitch_user"/>
+        <parameter name="password" value="secret_sauce"/>
+        <classes>
+            <class name="tests.SanityTest"/>
+        </classes>
+    </test>
+
+</suite>

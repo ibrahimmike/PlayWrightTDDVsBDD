@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="SauceLabs"  verbose="10"    >
+    <listeners>
+        <listener class-name="listeners.Listeners"/>
+    </listeners>
+
+
+    <test name="RegressionTest"  thread-count="4" parallel="methods" >
+        <classes>
+            <class name="tests.LoginPageTests"/>
+
+        </classes>
+    </test>
+</suite>

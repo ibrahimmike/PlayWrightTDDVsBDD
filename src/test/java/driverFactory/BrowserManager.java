@@ -41,8 +41,8 @@ public class BrowserManager  {
         pageThreadLocal.set(page);
     }
 
-    public BrowserManager(){
-        setBrowserManager();
+    private BrowserManager(){
+
 
     }
 
@@ -54,18 +54,18 @@ public class BrowserManager  {
             try {
                     setPlayWright(Playwright.create());
                     String browser = ReadProperties.getPropertyValue("browser");
-                    System.out.println(browser);
-                    //  System.out.println("The playWright create :"+Playwright.create().chromium().name());
-                  boolean headless = Boolean.getBoolean(ReadProperties.getPropertyValue("headless"));
+                System.out.println("Read property without boolean " + ReadProperties.getPropertyValue("headless"));
+                String head = ReadProperties.getPropertyValue("headless");
+
+                  boolean headless = Boolean.parseBoolean(head);
+                System.out.println("headless boolean : "+headless);
 
                     switch (browser) {
                         case "chrome":
-
                             setBrowser(getPlayWright().chromium().launch(
-                                    new BrowserType.LaunchOptions().setHeadless(false).setChannel("chrome")
+                                    new BrowserType.LaunchOptions().setHeadless(headless).setChannel("chrome")
                                             //.setArgs(List.of("--start-maximized"))
                                             ));
-
                             break;
                         case "firefox":
                             setBrowser(getPlayWright().firefox().launch(new BrowserType.LaunchOptions().setHeadless(headless).setChannel("firefox")));
@@ -110,6 +110,20 @@ public class BrowserManager  {
 
                             ));
                             break;
+                        case "iphone14pro":
+                           setBrowserContext(getBrowser().newContext(new Browser.NewContextOptions().setDeviceScaleFactor(3)
+                                .setHasTouch(true)
+                                .setIsMobile(true)
+                                .setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Mobile/15E148 Safari/604.1")
+                                .setViewportSize(393, 660)));
+                        case "iphone13":
+                            setBrowserContext(getBrowser().newContext( new Browser.NewContextOptions()
+                                    .setDeviceScaleFactor(3)
+                                    .setHasTouch(true)
+                                    .setIsMobile(true)
+                                    .setUserAgent("Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Mobile/15E148 Safari/604.1")
+                                    .setViewportSize(390, 664)));
+                            break;
                         default:
                             setBrowserContext(getBrowser().newContext(new Browser.NewContextOptions()
                                             .setScreenSize(440 , 956)
@@ -129,7 +143,7 @@ public class BrowserManager  {
 
 //                BrowserContext context = browser.newContext(new Browser.NewContextOptions()
 //                        .isMobile(false));
-                    getBrowserContext().setDefaultTimeout(180000);
+                    getBrowserContext().setDefaultTimeout(60000);
                     setPage(getBrowserContext().newPage());
 
 
@@ -142,7 +156,7 @@ public class BrowserManager  {
                 e.getMessage();
 
             }
-            getPage().navigate("https://www.saucedemo.com/v1");
+            getPage().navigate("https://www.saucedemo.com");
             //return getPage();
 
          //   return getPage();
@@ -153,7 +167,7 @@ public class BrowserManager  {
 
     }
 
-    public static   void tearDown(){
+    public static void tearDown(){
         try {
 
             if (pageThreadLocal.get() != null) pageThreadLocal.get().close();

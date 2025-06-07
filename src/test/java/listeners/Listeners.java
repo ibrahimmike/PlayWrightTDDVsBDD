@@ -2,6 +2,7 @@ package listeners;
 
 import extentReports.ExtentLogger;
 import extentReports.ExtentReport;
+import extentReports.ExtentReportManager;
 import org.testng.*;
 import utils.ReadProperties;
 
@@ -10,7 +11,8 @@ public class Listeners implements ITestListener, ISuiteListener{
     @Override
     public void onStart(ISuite suite) {
         ISuiteListener.super.onStart(suite);
-        ExtentReport.extentInit();
+        ExtentReport.extentInit(suite.getName());
+
     }
 
     @Override
@@ -22,16 +24,19 @@ public class Listeners implements ITestListener, ISuiteListener{
     @Override
     public void onTestStart(ITestResult result) {
         ITestListener.super.onTestStart(result);
-        result.getTestClass().getName();
-        ExtentReport.createTest(result.getTestClass().getName()+ " : " +result.getMethod().getMethodName() + " "
-                + ReadProperties.getPropertyValue("browser"));
+        //result.getTestContext().getName().toUpperCase()+ " \n "+
+
+//
+//        ExtentReport.createTest(  result.getTestClass().getName()+ " : " +result.getMethod().getMethodName() + "\n  browser : "
+//                + ReadProperties.getPropertyValue("browser") + " Device : " + ReadProperties.getPropertyValue("device"));
+
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
         ITestListener.super.onTestSuccess(result);
 
-        // System.out.println(result.getMethod().getMethodName());
+
         ExtentLogger.pass(result.getMethod().getMethodName() + " has passed");
     }
 
@@ -62,12 +67,15 @@ public class Listeners implements ITestListener, ISuiteListener{
     public void onStart(ITestContext context) {
 
         ITestListener.super.onStart(context);
+        ExtentReport.createTest(context.getName().toUpperCase()+ " Browser : " +ReadProperties.getPropertyValue("browser")
+        + " Device : " +ReadProperties.getPropertyValue("device") );
 
     }
 
     @Override
     public void onFinish(ITestContext context) {
         ITestListener.super.onFinish(context);
+
 
     }
 }

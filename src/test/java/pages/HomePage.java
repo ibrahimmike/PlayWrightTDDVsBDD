@@ -1,5 +1,6 @@
 package pages;
 
+import Products.CartThread;
 import Products.InitialCart;
 import Products.Product;
 import com.microsoft.playwright.ElementHandle;
@@ -8,6 +9,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.LoadState;
 import driverFactory.BrowserManager;
+import extentReports.ExtentLogger;
 
 import javax.sound.sampled.FloatControl;
 import java.util.ArrayList;
@@ -23,7 +25,8 @@ public class HomePage extends BasePage{
     protected InitialCart createdInitialCart;
     List<Locator> addedItems;
 
-    private final String inventoryFilterXpath = "//div[@id='inventory_filter_container']//select";
+    private final String inventoryFilterXpath = "//div[@id='header_container']//select";
+            //"//div[@id='inventory_filter_container']//select";
 
 
 
@@ -37,29 +40,34 @@ public class HomePage extends BasePage{
 
     public List<Locator> getProductsWebElements(){
         List<Locator>
-        products = browserManager.locator(productItemsXpath).all();
+        products = page.locator(productItemsXpath).all();
 
 
         return products;
     }
     public SingleProductPage userClicksOnOneOfTheItems(){
-        getProductsWebElements().get(1).locator("//div[@class='inventory_item_label']//div[@class='inventory_item_name']").click();
-        return new SingleProductPage(browserManager);
+        getProductsWebElements().get(1).locator("//div[@class='inventory_item_name ']").click();
+        return new SingleProductPage(page);
     }
 
 
     public HomePage userAddsToCartMultipleItems(){
-        browserManager.waitForSelector(inventoryFilterXpath);
-         createdInitialCart = new InitialCart();
-         InitialCart.emptyCart();
-       //  InitialCart.removeItemFromTheCart();
+        page.waitForSelector(inventoryFilterXpath);
+        CartThread.setCart();
+         createdInitialCart = CartThread.getInitialCart();
 
-        addedItems = getProductsWebElements().subList(0,3);
+         InitialCart.emptyCart();
+
+
+        addedItems = getProductsWebElements().subList(0,6);
         for (Locator item :addedItems){
-          String productName = item.locator("//div[@class='inventory_item_label']//div[@class='inventory_item_name']").textContent();
+          String productName = item.locator("//div[@class='inventory_item_name ']").textContent();
           String productDescription = item.locator("//div[@class='inventory_item_label']//div[@class='inventory_item_desc']").textContent();
           double productPrice = Double.parseDouble(item.locator("//div[@class='pricebar']//div[@class='inventory_item_price']").textContent().replace('$',' ').trim());
-          item.locator("//button[@class='btn_primary btn_inventory']").click();
+          if (item.locator("//button[contains(@class,'btn_small btn_inventory ')]").isDisabled()){
+              ExtentLogger.fail(productName + " the add to cart element is disabled ");
+          }
+          item.locator("//button[contains(@class,'btn_small btn_inventory ')]").click();
           Product product = new Product(productName, productDescription, productPrice);
 
           createdInitialCart.addToCart(product);
@@ -69,14 +77,11 @@ public class HomePage extends BasePage{
 
         return this;
     }
-//    public CartPage userClicksOnTheCartItem(){
-//     //   HeaderPage header = new HeaderPage(browserManager);
-//        return getHeader().clickOnTheCartItemInTheHeader();
-//    }
-    public HomePage removeItemFromCartAfterAddingIt(String itemName){
+
+    public HomePage removeItemFromCartAfterAddingIt(){
 
 
-        List<Locator> removeBtns = browserManager.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Remove")).all();
+        List<Locator> removeBtns = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Remove")).all();
 
         removeBtns.get(1).click();
 
@@ -86,10 +91,10 @@ public class HomePage extends BasePage{
 
     }
     private List<InventoryItems> getInventoryItems(){
-      List<Locator>  listOFInventoryItem = browserManager.locator(productItemsXpath).all();
+      List<Locator>  listOFInventoryItem = page.locator(productItemsXpath).all();
       List<InventoryItems> inventoryItems = new ArrayList<>();
       for (Locator item: listOFInventoryItem){
-          String inventoryItemName = item.locator("//div[@class='inventory_item_label']//div[@class='inventory_item_name']").textContent();
+          String inventoryItemName = item.locator("//div[@class='inventory_item_name ']").textContent();
           double inventoryItemPrice = Double.parseDouble(item.locator("//div[@class='pricebar']//div[@class='inventory_item_price']").textContent().replace('$',' ').trim());
           String productDescription = item.locator("//div[@class='inventory_item_label']//div[@class='inventory_item_desc']").textContent();
           String itemImage = item.locator("//div[@class='inventory_item_img']//img").getAttribute("alt");
@@ -101,14 +106,9 @@ public class HomePage extends BasePage{
 
     }
     public boolean checkTheOrderingByPriceLowToHigh(){
-        browserManager.locator(inventoryFilterXpath).selectOption("lohi");
+        page.locator(inventoryFilterXpath).selectOption("lohi");
 
         List<Integer> check = new ArrayList<>();
-//        try{
-//            Thread.sleep(3000);
-//        }catch (InterruptedException e){
-//
-//        }
 
 
         List<InventoryItems> inv = getInventoryItems();
@@ -124,7 +124,7 @@ public class HomePage extends BasePage{
         return !check.contains(0);
     }
     public boolean checkTheOrderingByPriceHighToLow(){
-        browserManager.locator(inventoryFilterXpath).selectOption("hilo");
+        page.locator(inventoryFilterXpath).selectOption("hilo");
         List<Integer> check = new ArrayList<>();
         try{
             Thread.sleep(3000);
@@ -146,7 +146,7 @@ public class HomePage extends BasePage{
         return !check.contains(0);
     }
     public boolean checkOrderingByProductNameAtoZ(){
-        browserManager.locator(inventoryFilterXpath).selectOption("az");
+        page.locator(inventoryFilterXpath).selectOption("az");
         List<Integer> check = new ArrayList<>();
         try{
             Thread.sleep(3000);
@@ -170,7 +170,7 @@ public class HomePage extends BasePage{
     }
 
     public boolean checkOrderingByProductNameZtoA(){
-        browserManager.locator(inventoryFilterXpath).selectOption("za");
+        page.locator(inventoryFilterXpath).selectOption("za");
         List<Integer> check = new ArrayList<>();
         try{
             Thread.sleep(3000);
@@ -198,12 +198,11 @@ public class HomePage extends BasePage{
 
 
     public boolean pageIsLoaded(){
-        return browserManager.locator(productItemsXpath).all().size()>1;
+
+        return page.locator(productItemsXpath).all().size()>1;
     }
 
-    public InitialCart getCreatedCart(){
-        return createdInitialCart;
-    }
+
 
     public class InventoryItems {
 

@@ -8,14 +8,14 @@ public class SingleProductPageTest extends BaseTest {
 
     @Test
     public void singleProductPageContainsProductData(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
         boolean check =loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton()
                 .userClicksOnOneOfTheItems().allProductComponentsAreVisible();
         Assert.assertTrue( check);
     }
     @Test
     public void userCanAddProductToTheCartFromTheSingleProductPage(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
         Assert.assertTrue(loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton()
                 .userClicksOnOneOfTheItems().addTheItemToTheCart().productISAddedToTheCart());
     }

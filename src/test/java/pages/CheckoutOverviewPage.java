@@ -1,12 +1,17 @@
 package pages;
 
+import Products.CartThread;
 import Products.InitialCart;
 import Products.Product;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.LoadState;
 import driverFactory.BrowserManager;
+import extentReports.ExtentLogger;
+import extentReports.ExtentReport;
+import extentReports.ExtentReportManager;
 import utils.ReadProperties;
 
 import java.math.RoundingMode;
@@ -30,20 +35,23 @@ public class CheckoutOverviewPage extends BasePage{
 
 
 
-    public CheckoutOverviewPage(Page browserManager) {
+    public CheckoutOverviewPage(Page page) {
 
-        super(browserManager);
-        browserManager.waitForLoadState(LoadState.DOMCONTENTLOADED);
-        cartComponentsPage = new CartComponentsPage(browserManager);
+        super(page);
+        page.waitForLoadState(LoadState.DOMCONTENTLOADED);
+        if (!page.locator(taxValueXpath).isVisible()){
+            ExtentLogger.fail("The checkout page did not load");
+        }
+        cartComponentsPage = new CartComponentsPage(page);
     }
 
     public CheckoutPage clickOnCancelBtn(){
-        browserManager.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("CANCEL")).click();
-        return  new CheckoutPage(browserManager);
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Cancel")).click();
+        return  new CheckoutPage(page);
     }
     public FinishPage clickOnTheFinishBtn(){
-        browserManager.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("FINISH")).click();
-        return new FinishPage(browserManager);
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Finish")).click();
+        return new FinishPage(page);
     }
 //    public List<Double> extractThePriceAndTheQuantity(){
 //        List<Double> priceAndQuantity = new ArrayList<>();
@@ -65,10 +73,16 @@ public class CheckoutOverviewPage extends BasePage{
       return   cartComponentsPage.getProductList().stream().mapToDouble(e->e.getProductPrice()).sum();
     }
     private double actualExtractedSalesBeforeTax(){
-        return Double.parseDouble(browserManager.locator(subtotalBeforeTax).textContent().substring(13).trim());
+        double amount = 0.0;
+        try{
+            amount = Double.parseDouble(page.locator(subtotalBeforeTax).textContent().substring(13).trim());
+        }catch(Exception error){
+            ExtentLogger.fail("The amount of sales before tax is not visible ");
+        }
+        return amount;
     }
     private double taxAmountExtractedValue(){
-        return Double.parseDouble(browserManager.locator(taxValueXpath).textContent().substring(6).trim());
+        return Double.parseDouble(page.locator(taxValueXpath).textContent().substring(6).trim());
     }
     private double calculatedTaxAmount(){
         DecimalFormat df = new DecimalFormat("#.##");
@@ -76,13 +90,13 @@ public class CheckoutOverviewPage extends BasePage{
         return Double.parseDouble(df.format( calculatedSalesBeforeTax()* Double.parseDouble(ReadProperties.getPropertyValue("taxRate"))));
     }
     private double calculatedAmountAfterTax(){
-       // System.out.println("Calculated amount after tax : " + calculatedTaxAmount());
+
         DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.UP);
+       // df.setRoundingMode(RoundingMode.UP);
         return Double.parseDouble(df.format( calculatedTaxAmount()+ calculatedSalesBeforeTax()));
     }
     private double actualExtractedTotalAmountAfterTax(){
-        return Double.parseDouble(browserManager.locator(totalAfterTaxXpath).textContent().substring(8).trim());
+        return Double.parseDouble(page.locator(totalAfterTaxXpath).textContent().substring(8).trim());
     }
 
     public boolean checkIfTheAmountBeforeTaxIsEqualToTheActualAmountPresented(){
@@ -90,22 +104,20 @@ public class CheckoutOverviewPage extends BasePage{
         return  actualExtractedSalesBeforeTax()==calculatedSalesBeforeTax();
     }
     public boolean checkIfTheTaxAmountIsCalculatedCorrectly(){
-        System.out.println("check if the tax Amount is calculated correctly : " + calculatedTaxAmount() );
-        System.out.println("Check if the tax amount is extracted correctly : " + taxAmountExtractedValue() );
-        return calculatedTaxAmount() == taxAmountExtractedValue();
+
+        return calculatedTaxAmount() == taxAmountExtractedValue() && taxAmountExtractedValue()!=0.00;
     }
     public boolean checkIfTheTotalAmountAfterTaxIsEqualToTheAmountPresented(){
-        System.out.println( "Calculated amount after tax : " + calculatedAmountAfterTax());
-        System.out.println("Actual extracted total amount after tax : " + actualExtractedTotalAmountAfterTax());
+
         return  calculatedAmountAfterTax()==actualExtractedTotalAmountAfterTax();
     }
     public  boolean checkIfTheCheckoutOverviewIsLoaded(){
-        return  browserManager.getByText("Checkout: Overview").isVisible();
+        return  page.getByText("Checkout: Overview").isVisible();
     }
     public boolean compareTheItemsOnTheOverviewPageAreTheSameAsTheOnesChosenByTheUser(){
         List<Product> checkoutOverviewCartComponent = cartComponentsPage.getProductList();
-        List<Product> initialProducts = InitialCart.getItemsInCart();
-        System.out.println();
+        List<Product> initialProducts = CartThread.getInitialCart().getItemsInCart();
+
         List<Integer> checks = new ArrayList<>();
         for (int i =0; i< checkoutOverviewCartComponent.size(); i++){
           checks.add(initialProducts.get(i).compareTo(checkoutOverviewCartComponent.get(i)));
@@ -117,8 +129,6 @@ public class CheckoutOverviewPage extends BasePage{
 
 
 
-   // DecimalFormat format =new DecimalFormat("#.##");
-    //  double amount = Double.parseDouble(format.format(amountToBePaid));
 
 
 

@@ -22,9 +22,9 @@ public class CartComponentsPage extends BasePage{
 
     private List<Product> productList;
     private  List<Locator> items;
-    public CartComponentsPage(Page browserManager) {
+    public CartComponentsPage(Page page) {
 
-        super(browserManager);
+        super(page);
         initialiseProductList();
 
 
@@ -33,13 +33,13 @@ public class CartComponentsPage extends BasePage{
 
 
     private void initialiseProductList(){
-        items = browserManager.locator(itemsListXpath).all();
+        items = page.locator(itemsListXpath).all();
         productList = new ArrayList<>();
       for(Locator item : items){
          String itemName =   item.locator(inventoryItemNameXpath ).textContent();
          double  productPrice = Double.parseDouble(item.locator(priceXpath).textContent().replace('$', ' ')
                  .trim());
-       //  int productQuantity = Integer.parseInt(item.locator(quantityRelativeXpath).textContent().trim());
+
          String productDescription = item.locator(inventoryItemDescriptionXpath).textContent();
          Product product = new Product(itemName,productDescription,productPrice);
          productList.add(product);

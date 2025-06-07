@@ -1,14 +1,18 @@
 package pages;
 
+import Products.CartThread;
 import Products.InitialCart;
 import Products.Product;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.options.AriaRole;
 import driverFactory.BrowserManager;
+import extentReports.ExtentLogger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class CartPage extends BasePage{
 
@@ -27,10 +31,11 @@ public class CartPage extends BasePage{
     private List<Locator> getTheAmountOfItemsInTheCart(){
         List<Locator> cartItems = new ArrayList<>();
         try{
-            cartItems = browserManager.locator(cartItemsListXpath).all();
+            cartItems = page.locator(cartItemsListXpath).all();
 
         }catch(Exception e){
-            System.out.println("The items were not added to the cart");
+          //  System.out.println("The items were not added to the cart");
+            ExtentLogger.fail("The amount of chosen products is not showing on the cart ");
         }
 
         return cartItems;
@@ -54,32 +59,23 @@ public class CartPage extends BasePage{
         return check;
    }
     public HomePage clickOnTheContinueShoppingBtn(){
-        browserManager.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Continue Shopping")).click();
-        try {
-            Thread.sleep(5000);
-        }catch(Exception e){
-            e.getMessage();
-        }
 
-        return new HomePage(browserManager);
+
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Continue Shopping")).click();
+
+
+        return new HomePage(page);
     }
     public CheckoutPage clickOnTheCheckoutBtn(){
-        browserManager.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("CHECKOUT")).click();
-        return new CheckoutPage(browserManager);
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Checkout")).click();
+
+
+        return new CheckoutPage(page);
     }
-//
-//
-//
 
-//
-
-
-//    private CartComponentsPage getCartComponentsPage(){
-//        CartComponentsPage cartComponentsPage = new CartComponentsPage(browserManager);
-//        return cartComponentsPage;
-//    }
     public boolean compareTheItemsOnTheCartToTheItemsChosenByTheUser(){
-      List<Product>  products =  InitialCart.getItemsInCart();
+      List<Product>  products = CartThread.getInitialCart().getItemsInCart();
+              //InitialCart.getItemsInCart();
 
       List<Product> cartComponents = cartComponentsPage.getProductList();
       List<Integer> checks = new ArrayList<>();
@@ -100,7 +96,7 @@ public class CartPage extends BasePage{
 
 
     public boolean cartPageIsVisible(){
-        return browserManager.getByText("Your Cart").isVisible();
+        return page.getByText("Your Cart").isVisible();
     }
 
 

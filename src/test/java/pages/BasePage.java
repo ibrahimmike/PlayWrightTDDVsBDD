@@ -11,20 +11,20 @@ import java.util.List;
 public class BasePage {
 
 
-    protected Page browserManager;
+    protected Page page;
     public BasePage(Page browserManager){
-        this.browserManager = browserManager;
+        this.page = browserManager;
 
     }
     public Page getBrowserManager(){
-        return browserManager;
+        return page;
     }
 
     public HeaderPage getHeader(){
-        return new HeaderPage(browserManager);
+        return new HeaderPage(page);
     }
     public FooterPage getFooter(){
-        return new FooterPage(browserManager);
+        return new FooterPage(page);
     }
 
 

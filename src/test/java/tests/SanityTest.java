@@ -7,7 +7,7 @@ import org.testng.annotations.*;
 import pages.*;
 
 public class SanityTest {
-    private Page browserManager;
+    private Page page;
     private LoginPage loginPage;
 
    private HomePage homePage;
@@ -17,16 +17,19 @@ public class SanityTest {
 
 
 
-    @BeforeTest
-    public void initializeTests(){
-        browserManager = PageThreadLocal.initPage();
-        loginPage = new LoginPage(browserManager);
+
+    @Parameters({"userName", "password"})
+    @BeforeTest()
+    public void initializeTests(String userName, String password){
+        page = PageThreadLocal.initPage();
+        loginPage = new LoginPage(page);
+        homePage = loginPage.enterUserName(userName).enterUserPassword(password).clickOnLoginButton();
 
     }
     @Test(priority = 1)
     public void userLogin(){
 
-        homePage = loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton();
+
        // homePage.userAddsToCartMultipleItems();
 
         Assert.assertTrue(homePage.pageIsLoaded());
@@ -35,7 +38,7 @@ public class SanityTest {
     public void userAddsProductsToTheHomePage(){
         homePage.userAddsToCartMultipleItems();
 
-       Assert.assertTrue(homePage.pageIsLoaded());
+       Assert.assertTrue(homePage.getHeader().getTheNumberShowingOnTheCartItem()==6, " The amount on the cart is not the same amount of products chosen by the user ");
     }
     @Test(priority = 3)
     public void userIsRedirectedToTheCartPageWhenClicksOnTheCartItem(){
@@ -54,7 +57,7 @@ public class SanityTest {
     @Test(priority = 6)
     public void userEntersHisDataOnTheCheckoutPageAndTheCheckOutPageIsVisible(){
         checkoutOverviewPage = checkoutPage.enterUserName("Baba").enterLastName("Yaga").enterZipCode("1234").clickOnTheContinueBtn();
-        Assert.assertTrue(checkoutOverviewPage.checkIfTheCheckoutOverviewIsLoaded());
+        Assert.assertTrue(checkoutOverviewPage.checkIfTheCheckoutOverviewIsLoaded(),"The checkout overview did not load");
     }
     @Test(priority = 7)
     public void  theOrderDisplayedIsTheSameAsTheUserChose(){

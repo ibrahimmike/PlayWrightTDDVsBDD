@@ -12,15 +12,16 @@ public class ExtentReport {
 
     private static ExtentReports extentReports;
 
-    public static void extentInit() {
+    public static void extentInit(String reportName) {
        // System.out.println(Constants.getExtentReportPath());
 
         extentReports = new ExtentReports();
-        ExtentSparkReporter spark = new ExtentSparkReporter("./build/"+"test-output"+"/"+ "extentReport.html");
+        ExtentSparkReporter spark = new ExtentSparkReporter("extentReports"+"/"+ "extentReport.html");
 
         spark.config().setTheme(Theme.DARK);
         spark.config().setDocumentTitle("SauceLabsTest");
-        spark.config().setReportName("First Report");
+        spark.config().setReportName(reportName);
+        extentReports.createTest(reportName);
         extentReports.attachReporter(spark);
 
     }
@@ -33,11 +34,7 @@ public class ExtentReport {
     public static void closeTest(){
         ExtentReportManager.removeTest();
         extentReports.flush();
-//        try{
-//          //  Desktop.getDesktop().browse(new File(Constants.getExtentReportPath()).toURI());
-//        }catch(IOException e){
-//            throw new RuntimeException("The file to the extent report cannot be created nor opened");
-//        }
+
 
     }
 }

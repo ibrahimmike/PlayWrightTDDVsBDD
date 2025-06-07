@@ -18,32 +18,32 @@ public class LoginPage extends BasePage{
         browserManager.waitForSelector(loginBtnId);
     }
     public LoginPage enterUserName(String name){
-        browserManager.locator(userNameId).clear();
+        page.locator(userNameId).clear();
 
-        browserManager.locator(userNameId).fill(name);
+        page.locator(userNameId).fill(name);
         return this;
     }
     public LoginPage enterUserPassword(String password){
-        browserManager.locator(passwordId).clear();
-        browserManager.locator(passwordId).fill(password);
+        page.locator(passwordId).clear();
+        page.locator(passwordId).fill(password);
         return this;
     }
     public HomePage clickOnLoginButton() {
-        browserManager.locator(loginBtnId).click();
-        return new HomePage(browserManager);
+        page.locator(loginBtnId).click();
+        return new HomePage(page);
 
     }
     public String clickOnLoginBtnErrorLogin(){
 
-        browserManager.locator(loginBtnId).click();
-        return browserManager.locator("//h3[@data-test='error']").textContent();
+        page.locator(loginBtnId).click();
+        return page.locator("//h3[@data-test='error']").textContent();
     }
 //    public void navigateToLoginPage(){
 //        browserManager.navigate("https://www.saucedemo.com/v1");
 //    }
 
     public boolean loginPageIsLoaded(){
-         browserManager.locator(loginBtnId).click();
+         page.locator(loginBtnId).click();
          return true;
     }
 

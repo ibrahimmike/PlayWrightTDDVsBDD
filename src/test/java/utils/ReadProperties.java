@@ -43,7 +43,7 @@ public class ReadProperties {
         if( Objects.nonNull(configParam.get(key))){
 
             value = configParam.get(key);
-            System.out.println(value);
+
         }else{
             throw new RuntimeException("The value of the " + key + " does not exit in the configparams file");
         }
@@ -53,22 +53,17 @@ public class ReadProperties {
         Properties properties = new Properties();
         try (InputStream input = ResourceLoader.getResource()){
             //new FileInputStream(configPath)
+//           properties = readProperties();
             properties.load(input);
+
+
+
+
         }catch(Exception e){
             throw new RuntimeException("Unable to read the property file "  );
             //  log.error("Unable to read the property file {}", DEFAULT_PROPERTIES, e);
         }
         return properties;
     }
-//    private static Properties readDevices(){
-//        Properties props = new Properties();
-//        try(InputStream inputStream = new FileInputStream("devices.json")) {
-//            props.load(inputStream);
-//        } catch (Exception e){
-//            throw new RuntimeException("The json file is not loaded");
-//        }
-//    }
-    public static Properties getProperties(){
-        return properties;
-    }
+
 }

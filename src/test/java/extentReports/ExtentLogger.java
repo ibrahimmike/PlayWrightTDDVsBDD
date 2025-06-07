@@ -20,7 +20,6 @@ public class ExtentLogger {
 
     public static void fail(String message){
         byte[] buffer = PageThreadLocal.getPage().screenshot();
-      //  System.out.println(Base64.getEncoder().encodeToString(buffer));
         ExtentReportManager.getReport().fail(message,
                 MediaEntityBuilder.createScreenCaptureFromBase64String(Base64.getEncoder().encodeToString(buffer)).build());
     }
@@ -34,10 +33,5 @@ public class ExtentLogger {
 
 
 
-//    private static String makePicture(){
-//       // return  ((TakesScreenshot) DriverManager.getDriver()).getScreenshotAs(OutputType.BASE64);
-//        String path = System.getProperty("usr.dir")+"screenshots"+System.currentTimeMillis()+".png";
-//           PageThreadLocal.getPage().screenshot(new Page.ScreenshotOptions().setPath(Paths.get(path)));
-//         return path;
-//    }
+
 }

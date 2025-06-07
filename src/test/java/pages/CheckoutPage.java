@@ -4,60 +4,56 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.options.AriaRole;
 import driverFactory.BrowserManager;
+import extentReports.ExtentLogger;
+import extentReports.ExtentReport;
 
 public class CheckoutPage extends BasePage{
 
     private final String errorMessageXpath = "//h3[@data-test='error']";
-    private final String continueBtnXpath = "//input[@value='CONTINUE']";
+    private final String continueBtnXpath = "//input[@id='continue']";
     private final String headerName = "//div[@id='header_container']//div[@data-test='secondary-header']";
     public CheckoutPage(Page browserManager) {
         super(browserManager);
     }
 
-//    public void waitForThePage(){
-//        try {
-//            Thread.sleep(10000);
-//        }catch(Exception e){
-//            e.getMessage();
-//        }
-//    }
-//    public HeaderPage getHeader(){
-//        return new HeaderPage(browserManager);
-//    }
+
     public CheckoutPage enterUserName(String userName){
 
-        browserManager.getByPlaceholder("First Name").fill(userName);
+        page.getByPlaceholder("First Name").fill(userName);
         return this;
     }
     public CheckoutPage enterLastName(String lastName){
-        browserManager.getByPlaceholder("Last Name").fill(lastName);
+//        if ( page.getByPlaceholder("Last Name").){
+//            ExtentLogger.fail("The last text box is not enabled");
+//        }
+        page.getByPlaceholder("Last Name").fill(lastName);
         return this;
     }
     public CheckoutPage enterZipCode(String zipCode){
-        browserManager.getByPlaceholder("Zip/Postal Code").fill(zipCode);
+        page.getByPlaceholder("Zip/Postal Code").fill(zipCode);
         return this;
     }
     public CartPage clickOnCancelBtn(){
-        browserManager.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("CANCEL")).click();
-        return new CartPage(browserManager);
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Cancel")).click();
+        return new CartPage(page);
     }
 
     public CheckoutOverviewPage clickOnTheContinueBtn(){
-        browserManager.locator(continueBtnXpath).click();
-        return new CheckoutOverviewPage(browserManager);
+        page.locator(continueBtnXpath).click();
+        return new CheckoutOverviewPage(page);
     }
     public boolean checkoutPageIsVisible(){
-       return browserManager.getByPlaceholder("First Name").isVisible();
+       return page.getByPlaceholder("First Name").isVisible();
     }
 
     public String clickOnTheContinueBtnToGetTheErrorMessage(){
-        browserManager.locator(continueBtnXpath).click();
-        return browserManager.locator(errorMessageXpath).textContent().trim();
+        page.locator(continueBtnXpath).click();
+        return page.locator(errorMessageXpath).textContent().trim();
     }
     public String headerPageNameIsVisibleAndEqualTo(){
 
         try{
-            return  browserManager.getByText("Checkout: Your Information").textContent();
+            return  page.getByText("Checkout: Your Information").textContent();
         }catch(TimeoutError e){
             throw new RuntimeException("The header on the checkout Your information page is not visible");
 

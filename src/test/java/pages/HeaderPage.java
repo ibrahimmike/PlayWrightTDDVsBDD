@@ -12,8 +12,10 @@ import java.util.concurrent.TimeoutException;
 public class HeaderPage extends BasePage{
 
     private final String burgerListXpath = "//div[@class='bm-burger-button']//button";
-    private final String linkForTheCartXpath = "//a[@href='./cart.html']";
-    private final String theAmountOfItemOnTheCartLogo = "//span[@class='fa-layers-counter shopping_cart_badge']";
+    private final String linkForTheCartXpath = "//a[@class='shopping_cart_link']";
+            //"//a[@href='./cart.html']";
+    private final String theAmountOfItemOnTheCartLogo = "//span[@class='shopping_cart_badge']";
+                    //"//span[@class='fa-layers-counter shopping_cart_badge']";
 
 
     private final String logoXpath = "//div[@class='app_logo']";
@@ -24,29 +26,25 @@ public class HeaderPage extends BasePage{
     public CartPage clickOnTheCartItemInTheHeader(){
      //  ElementHandle linkForCart = browserManager.waitForSelector(linkForTheCartXpath);
      //  linkForCart.asElement().click();
-        browserManager.waitForSelector(linkForTheCartXpath).click();
-        return new CartPage(browserManager);
+        page.waitForSelector(linkForTheCartXpath).click();
+        return new CartPage(page);
     }
 
-//    public void chooseASelectOption(String option){
-//        browserManager.getPage().locator(inventoryFilterXpath).selectOption(new SelectOption().setValue(option));
-//
-//    }
 
     public  BurgerListPage clickOnTheBurgerListBtn(){
-        browserManager.locator(burgerListXpath).click();
-        return new BurgerListPage(browserManager);
+        page.locator(burgerListXpath).click();
+        return new BurgerListPage(page);
     }
     public boolean burgerListIsVisible(){
-        return  browserManager.locator(burgerListXpath).isVisible();
+        return  page.locator(burgerListXpath).isVisible();
     }
     public boolean headerisVisble(){
-        return browserManager.locator(logoXpath).isVisible();
+        return page.locator(logoXpath).isVisible();
     }
     public int getTheNumberShowingOnTheCartItem(){
         try {
 
-          int amount = Integer.parseInt(browserManager.locator(theAmountOfItemOnTheCartLogo).textContent());
+          int amount = Integer.parseInt(page.locator(theAmountOfItemOnTheCartLogo).textContent());
             System.out.println("Amount on the cart" + amount);
           return amount;
         }catch(TimeoutError e){
@@ -71,33 +69,33 @@ public class HeaderPage extends BasePage{
 
         //"//button[@id='react-burger-cross-btn']";
         public HomePage clickOnAllItems(){
-            browserManager.locator(allItemsHeader).click();
-            return new HomePage(browserManager);
+            page.locator(allItemsHeader).click();
+            return new HomePage(page);
         }
         public String clickOnAboutButton(){
-            browserManager.locator(aboutButtonXpath).click();
-            return browserManager.url();
+            page.locator(aboutButtonXpath).click();
+            return page.url();
         }
 
         public LoginPage clickOnLogoutButton(){
-            browserManager.locator(logoutBtn).click();
+            page.locator(logoutBtn).click();
 
-            return new LoginPage(browserManager);
+            return new LoginPage(page);
         }
 
         private void clickOnTheCloseBtn(){
-            browserManager.locator(closeButton).dblclick();
+            page.locator(closeButton).dblclick();
         }
 
         public boolean clickOnResetBtn(){
             boolean theAmountOnTheCartIsRemoved = false;
-            browserManager.locator(resetBtnXpath).click();
+            page.locator(resetBtnXpath).click();
            // browserManager.locator(closeButton).click();
 
             try{
                 clickOnTheCloseBtn();
               //  int amount = Integer.parseInt(browserManager.locator("//div[@class='shopping_cart_container']").textContent());
-                return !browserManager.locator("//div[@class='shopping_cart_container']//span").isVisible();
+                return !page.locator("//div[@class='shopping_cart_container']//span").isVisible();
              //   return browserManager.waitForSelector(theAmountOfItemOnTheCartLogo).isVisible();
               // theAmountOnTheCartIsRemoved =  amount > 0;
             }catch(TimeoutError error){

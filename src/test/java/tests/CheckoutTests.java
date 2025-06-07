@@ -8,7 +8,7 @@ public class CheckoutTests  extends BaseTest{
 
     @Test
     public void userEntersHisDataAndClicksOnContinueToBeRedirectedTo(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
        boolean check =  loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().getHeader()
                .clickOnTheCartItemInTheHeader().clickOnTheCheckoutBtn().enterUserName("ibrahim").
                 enterLastName("Cute").enterZipCode("12345").clickOnTheContinueBtn().checkIfTheCheckoutOverviewIsLoaded();
@@ -17,7 +17,7 @@ public class CheckoutTests  extends BaseTest{
     }
     @Test
     public void noValuesEnteredInTheCheckoutPage(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
        String errorMessage = loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().getHeader().clickOnTheCartItemInTheHeader()
                .clickOnTheCheckoutBtn().clickOnTheContinueBtnToGetTheErrorMessage();
         System.out.println(errorMessage);
@@ -25,7 +25,7 @@ public class CheckoutTests  extends BaseTest{
     }
     @Test
     public void theUserAddsOnlyFirstNameClicksContinueButton(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
         String errorMessage = loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().
         getHeader().clickOnTheCartItemInTheHeader().clickOnTheCheckoutBtn().enterUserName("ibrahim").clickOnTheContinueBtnToGetTheErrorMessage();
         System.out.println(errorMessage);
@@ -33,7 +33,7 @@ public class CheckoutTests  extends BaseTest{
     }
     @Test
     public void theUserAddsTheFirstNameAndLastNameButNotThePostalCode(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
         String errorMessage = loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().getHeader()
                 .clickOnTheCartItemInTheHeader().clickOnTheCheckoutBtn().enterUserName("ibrahim").enterLastName("Cute").clickOnTheContinueBtnToGetTheErrorMessage();
         System.out.println(errorMessage);
@@ -41,14 +41,14 @@ public class CheckoutTests  extends BaseTest{
     }
     @Test
     public void headerNamePageIsVisible(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
         String headerIsCorrect = loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().getHeader().clickOnTheCartItemInTheHeader()
                 .clickOnTheCheckoutBtn().headerPageNameIsVisibleAndEqualTo();
         Assert.assertEquals(headerIsCorrect,"Checkout: Your Information" ,"Header is not visible or doesn't equal the expected value");
     }
     @Test
     public void userClicksOnCancelAndReturnsToCartPage(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
        boolean cartPageIsVisible = loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems()
                .getHeader()
                 .clickOnTheCartItemInTheHeader().clickOnTheCheckoutBtn().clickOnCancelBtn().cartPageIsVisible();
@@ -56,7 +56,7 @@ public class CheckoutTests  extends BaseTest{
     }
     @Test
     public void footerIsVisible(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
       boolean footerIsVisible =  loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems()
                 .getHeader().clickOnTheCartItemInTheHeader().clickOnTheCheckoutBtn().getFooter().footerISLoaded();
       Assert.assertTrue(footerIsVisible);

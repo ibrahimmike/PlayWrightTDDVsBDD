@@ -10,7 +10,7 @@ public class CheckOutOverviewTests extends BaseTest {
 
     @Test
     public void checkOverviewTitleIsVisible(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
       boolean titleIsShowing =  loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().
               getHeader().clickOnTheCartItemInTheHeader()
                 .clickOnTheCheckoutBtn().enterUserName("ibrahim").enterLastName("Baba").enterZipCode("1234").clickOnTheContinueBtn().checkIfTheCheckoutOverviewIsLoaded();
@@ -19,7 +19,7 @@ public class CheckOutOverviewTests extends BaseTest {
 
     @Test
     public void checkTheProductsOnTheOverviewPageIsTheSameAsTheChosenByTheUser(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
         boolean theSameProducts =  loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().
                 getHeader().clickOnTheCartItemInTheHeader().clickOnTheCheckoutBtn().enterUserName("ibrahim").enterLastName("Baba").enterZipCode("1234")
                 .clickOnTheContinueBtn().compareTheItemsOnTheOverviewPageAreTheSameAsTheOnesChosenByTheUser();
@@ -27,7 +27,7 @@ public class CheckOutOverviewTests extends BaseTest {
     }
     @Test
     public void amountBeforeTaxIsCorrect(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
         boolean amountBeforeTaxIsCorrect =  loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().
                 getHeader().clickOnTheCartItemInTheHeader().clickOnTheCheckoutBtn().enterUserName("ibrahim").enterLastName("Baba").enterZipCode("1234")
                 .clickOnTheContinueBtn().checkIfTheAmountBeforeTaxIsEqualToTheActualAmountPresented();
@@ -35,7 +35,7 @@ public class CheckOutOverviewTests extends BaseTest {
     }
     @Test
     public void amountAfterTaxIsTheSameAsExpected(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
         boolean amountAfterTaxIsCorrect = loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().
                 getHeader().clickOnTheCartItemInTheHeader().clickOnTheCheckoutBtn().enterUserName("ibrahim").enterLastName("Baba").enterZipCode("1234")
                 .clickOnTheContinueBtn().checkIfTheTotalAmountAfterTaxIsEqualToTheAmountPresented();
@@ -43,7 +43,7 @@ public class CheckOutOverviewTests extends BaseTest {
     }
     @Test
     public void compareAmountBeforeTax(){
-        LoginPage loginPage = new LoginPage(browserManager);
+        LoginPage loginPage = new LoginPage(page);
         boolean checkAmountBeforeTax = loginPage.enterUserName("standard_user").enterUserPassword("secret_sauce").clickOnLoginButton().userAddsToCartMultipleItems().
                 getHeader().clickOnTheCartItemInTheHeader().clickOnTheCheckoutBtn().enterUserName("ibrahim").enterLastName("Baba").enterZipCode("1234")
                 .clickOnTheContinueBtn().checkIfTheTaxAmountIsCalculatedCorrectly();

@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="sauceLabs"  verbose="10"    >
+<suite name="Regression Tests"  verbose="10"   thread-count="8" parallel="tests">
         <listeners>
             <listener class-name="listeners.Listeners"/>
         </listeners>
 
 
-    <test name="RegressionTest"  thread-count="4" parallel="methods" >
+    <test name="Burger List Tests">
         <classes>
             <class name="tests.BurgerListPageTests"/>
-            <class name="tests.CartPageTests"/>
+        </classes>
+    </test>
+    <test name="Cart Page Tests" >
+        <classes>
+            <class name="tests.CartPageTests" />
+        </classes>
+
+    </test>
+    <test name="Checkout OverView page Tests">
+        <classes>
             <class name="tests.CheckOutOverviewTests"/>
+        </classes>
+    </test>
+    <test name="Checkout page tests" >
+        <classes>
             <class name="tests.CheckoutTests"/>
+        </classes>
+    </test>
+    <test name="Home page tests" >
+        <classes>
             <class name="tests.HomePageTests"/>
+        </classes>
+    </test>
+    <test name="Login Page Tests" >
+        <classes>
             <class name="tests.LoginPageTests"/>
+        </classes>
+    </test>
+    <test name="Single Page Tests" >
+        <classes>
             <class name="tests.SingleProductPageTest"/>
         </classes>
     </test>

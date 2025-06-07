@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright/java:v1.49.0-jammy
+#FROM mcr.microsoft.com/playwright/java:v1.49.0-jammy
 
 # RUN apt-get update
 #RUN apt-get -install npm
@@ -7,22 +7,32 @@ FROM mcr.microsoft.com/playwright/java:v1.49.0-jammy
 #ADD seccomp_profile.json ~/bin/bash/seccomp_profile.json
 
 
-WORKDIR lib.usr-is-merged/projectExecution
-ADD pom.xml pom.xml
-RUN mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps"
-
-
-RUN  mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps"
-RUN  mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install webkit"
-
-RUN  mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps chromium"
-RUN mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install msedge"
-RUN mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install chromium"
-RUN mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install chrome"
-
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-ADD target/docker-resources .
-ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=true
+#WORKDIR lib.usr-is-merged/projectExecution
+#ADD pom.xml pom.xml
+#RUN mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps"
+#
+#
+#RUN  mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps"
+#RUN  mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install webkit"
+#
+#RUN  mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install-deps chromium"
+#RUN mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install msedge"
+#RUN mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install chromium"
+#RUN mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install chrome"
+#
+#ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+#ADD target/docker-resources .
+##ADD target .
+#ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=true
 
 
 #ENTRYPOINT java -cp "libs/*" -Dbrowser=firefox org.testng.TestNG testSuites/RegressionTest.xml
+#ENTRYPOINT mvn -e clean test -Pcucumber test -Dbrowser=chrome -Ddevice=desktop -Dheadless=true -Dcucumber.filter.tags="@Regression"
+
+FROM mcr.microsoft.com/playwright/java:v1.49.0-jammy
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=false
+WORKDIR /taget/docker-resources
+ADD pom.xml pom.xml
+ADD target/docker-resources .
+VOLUME $PWD/reports/:/taget/docker-resources/extentReports/
+#ENTRYPOINT java -Dheadless=true -Dbrowser=safari -cp "libs/*"  org.testng.TestNG testSuites/RegressionTest.xml

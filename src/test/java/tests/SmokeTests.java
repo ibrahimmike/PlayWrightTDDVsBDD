@@ -5,13 +5,22 @@ import driverFactory.PageThreadLocal;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import pages.LoginPage;
+import utils.ReadUserDataFromCSV;
 
 public class SmokeTests {
-    private Page browserManager;
+    private Page page;
 
     @BeforeTest
     public void setUp(){
-       browserManager =  PageThreadLocal.initPage();
+       page =  PageThreadLocal.initPage();
+        LoginPage loginPage = new LoginPage(page);
+    }
+
+
+    @Test
+    public void test(){
+        System.out.println(ReadUserDataFromCSV.getTestData());
     }
 
 
